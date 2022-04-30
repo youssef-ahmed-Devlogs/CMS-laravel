@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -19,6 +19,11 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    @yield('stylesheets')
 </head>
 
 <body>
@@ -64,7 +69,7 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
-                                                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                                                                                                                                                                                                                                 document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
 
@@ -99,18 +104,48 @@
                     </script>
                 @endif
 
+                {{-- Danger Messages --}}
+                @if (session()->has('danger'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="danger">
+                        {{ session()->get('danger') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <script>
+                        setTimeout(() => {
+                            document.getElementById('danger').remove();
+                        }, 10000);
+                    </script>
+                @endif
+
                 <div class="row">
                     {{-- START SIDEBAR --}}
                     <div class="col-md-4">
                         <ul class="list-group">
                             <li class="list-group-item">
+                                <a href="{{ route('users.edit', Auth::user()->id) }}">Profile</a>
+                            </li>
+                            @if (Auth::user()->isAdmin())
+                                <li class="list-group-item">
+                                    <a href="{{ route('users.index') }}">Users</a>
+                                </li>
+                            @endif
+                            <li class="list-group-item">
                                 <a href="{{ route('home') }}">Dashboard</a>
                             </li>
                             <li class="list-group-item">
-                                <a href="/posts">Posts</a>
+                                <a href="{{ route('posts.index') }}">Posts</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="{{ route('posts.trashed') }}">Trashed Posts</a>
                             </li>
                             <li class="list-group-item">
                                 <a href="{{ route('categories.index') }}">Categories</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="{{ route('tags.index') }}">Tags</a>
                             </li>
                         </ul>
                     </div>
@@ -131,6 +166,13 @@
 
 
     </div>
+    <!-- Jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    @yield('scripts')
 </body>
 
 </html>
